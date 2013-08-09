@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6.0)
 
 # pull in the pods macros. See cmake/pods.cmake for documentation
-set(POD_NAME point-process-experiment-core)
+set(POD_NAME p2l-point-process-experiment-core)
 include(cmake/pods.cmake)
 
 # automatically build LCM types.  This also defines a number of CMake
@@ -18,7 +18,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3")
 
 
 # The library
-add_library( point-process-experiment-core SHARED
+add_library( p2l-point-process-experiment-core SHARED
   src/simulated_data.cpp
   )
 pods_install_headers(
@@ -26,12 +26,15 @@ pods_install_headers(
   DESTINATION
   point-process-experiment-core
 )
-pods_use_pkg_config_packages(point-process-experiment-core math-core lcmtypes_math-core probability-core lcmtypes_probability-core point-process-core )
-pods_install_libraries( point-process-experiment-core )
-pods_install_pkg_config_file(point-process-experiment-core
+pods_use_pkg_config_packages(p2l-point-process-experiment-core 
+    p2l-math-core lcmtypes_p2l-math-core 
+    p2l-probability-core lcmtypes_p2l-probability-core 
+    p2l-point-process-core )
+pods_install_libraries( p2l-point-process-experiment-core )
+pods_install_pkg_config_file(p2l-point-process-experiment-core
     CFLAGS
-    LIBS -lpoint-process-experiment-core
-    REQUIRES math-core probability-core point-process-core
+    LIBS -lp2l-point-process-experiment-core
+    REQUIRES p2l-math-core p2l-probability-core p2l-point-process-core
     VERSION 0.0.1)
 
 
