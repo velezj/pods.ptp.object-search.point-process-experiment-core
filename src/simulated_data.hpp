@@ -5,7 +5,6 @@
 
 #include <lcmtypes/p2l_math_core.hpp>
 #include <lcmtypes/p2l_probability_core.hpp>
-#include <lcmtypes/p2l_point_process_core.hpp>
 #include <probability-core/distributions.hpp>
 #include <math-core/geom.hpp>
 
@@ -58,7 +57,7 @@ namespace point_process_experiment_core {
 	p = points[p_i];
 
 	// sample noise for each coordinate and add to p
-	for( size_t c_i = 0; c_i < p.n; ++c_i ) {
+	for( size_t c_i = 0; (long)c_i < p.n; ++c_i ) {
 	  double noise_value = probability_core::sample_from( noise_distribution ).coordinate[0];
 	  p.coordinate[c_i] += noise_value;
 	}
