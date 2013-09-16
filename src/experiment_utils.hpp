@@ -4,6 +4,8 @@
 
 
 #include <planner-core/planner.hpp>
+#include <boost/optional.hpp>
+#include <iosfwd>
 
 
 namespace point_process_experiment_core {

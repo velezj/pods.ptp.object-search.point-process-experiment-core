@@ -1,5 +1,7 @@
 
 #include "experiment_utils.hpp"
+#include <iostream>
+#include <algorithm>
 
 
 using namespace math_core;
@@ -157,6 +159,120 @@ nd_aabox_t
 
 
 //==========================================================================
+
+std::vector<marked_grid_cell_t>
+simulate_run_until_all_points_found
+( grid_planner_t& planner,
+  const nd_aabox_t& initial_window,
+  const std::vector<nd_point_t>& ground_truth,
+  boost::optional<std::ostream>& out_meta,
+  boost::optional<std::ostream>& out_trace,
+  boost::optional<std::ostream>& out_progress )
+{
+
+  // the iteration counter
+  size_t iteration = 0;
+
+  // the list of chosen cells
+  std::vector<marked_grid_cell_t> chosen_cells;
+  std::vector<nd_aabox_t> chosen_regions;
+  std::vector< bool > chosen_region_negative;
+
+  // run the planner while we have no found everything
+  while( planner.observations().size() < ground_truth.size() ) {
+    
+    // Choose the next observation cell
+    marked_grid_cell_t next_cell = 
+      planner.choose_next_observation_cell();
+    
+    // Take any points inside the cell
+    // and add as observations
+    std::vector<nd_point_t> new_obs;
+    nd_aabox_t region = planner.visisted_grid().region( next_cell );
+    std::vector<nd_point_t> obs = planner.observations();
+    for( std::size_t p_i = 0;
+	 p_i < ground_truth.size();
+	 ++p_i ) {
+
+      // check if point is inside region and not already part of process
+      nd_point_t point = ground_truth[ p_i ];
+      if( is_inside( point, region ) &&
+	  std::find( obs.begin(),
+		     obs.end(),
+		     point ) == obs.end() ) {
+	new_obs.push_back( point );
+      }
+    }
+
+    // update chosen cells and regions
+    chosen_cells.push_back( next_cell );
+    chosen_regions.push_back( region );
+    
+    // Ok, add new observation or a negative region if no new obs
+    if( new_obs.empty() ) {
+      planner.add_negative_observation( next_cell );
+      chosen_region_negative.push_back( true );
+    } else {
+      
+      // now add negative regions for the places in the cell without points
+      std::vector<nd_aabox_t> empty_regs = compute_empty_regions( new_obs, region );
+      for( size_t i = 0; i < empty_regs.size(); ++i ) {
+	planner.add_empty_region( empty_regs[i] );
+      }
+
+      // and add teh actual observations 
+      // (make sure this is AFTER the empty regions)
+      planner.add_observations( new_obs );
+      chosen_region_negative.push_back( false );      
+    }
+
+    // update position
+    planner.set_current_position( region.start + (region.end - region.start) * 0.5 );
+
+
+    // add the cell as visited to the planner
+    planner.add_visited_cell( next_cell );
+
+    // add to trace
+    if( out_trace ) {
+      (*out_trace) << iteration << " "
+		   << next_cell << " "
+		   << new_obs.size() << " "
+		   << planner.observations().size() << " "
+		   << region << " ";
+      for( size_t i = 0; i < new_obs.size(); ++i ) {
+	(*out_trace) << new_obs[ i ] << " ";
+      }
+      (*out_trace) << std::endl;
+      (*out_trace).flush();
+    }
+
+    
+    // print the process model parameters to user
+    if( out_progress ) {
+      (*out_progress) << "[" << iteration << "]   " << std::endl;
+      (*out_progress) << process->_state << std::endl;
+      
+      // print status to user
+      (*out_progress) << "[" << iteration << "]   "
+		      <<  "cell: " << next_cell 
+		      << "  { #new= " << new_obs.size() << " total: " << planner.observations().size() << " }" 
+	// << " entropy: " << entropy
+		      << std::endl;
+      (*out_progress) << std::flush;
+    }
+      
+    // icrease iteration count
+    ++iteration;
+  }
+
+  // return the chosen cells
+  return chosen_cells;
+
+}
+
+
+
 //==========================================================================
 //==========================================================================
 //==========================================================================
