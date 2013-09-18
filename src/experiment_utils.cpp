@@ -2,6 +2,7 @@
 #include "experiment_utils.hpp"
 #include <iostream>
 #include <algorithm>
+#include <math-core/io.hpp>
 
 
 using namespace math_core;
@@ -104,19 +105,17 @@ nd_aabox_t
   nd_aabox_t actual_window = enclosing_window_for_cells( grid, cells );
 
   // grab the ground truth points inside of the window
-  std::vector<nd_point_t> seen_points = points_inside_window( ground_truth,
-							      actual_window);
+  std::vector<nd_point_t> seen_points = points_inside_window(actual_window,
+							     ground_truth);
   
   // now update the planner with the observations of the points
-  for( size_t i = 0 ; i < seen_points.size(); ++i ) {
-    planner._observations.push_back( seen_points[i] );
-  }
+  planner.add_observations( seen_points );
 
   // now add the fully negative cell regions
   std::vector<marked_grid_cell_t> partial_cells;
   for( size_t i = 0; i < cells.size(); ++i ) {
     nd_aabox_t region = grid.region( cells[ i ] );
-    if( points_inside_window( ground_truth, region ).empty() ) {
+    if( points_inside_window( region, ground_truth ).empty() ) {
       
       // this is a fully negative cell, so add it to the planner
       planner.add_negative_observation( cells[i] );
@@ -135,8 +134,8 @@ nd_aabox_t
     
     // grab the points in the cell's region
     nd_aabox_t region = grid.region( partial_cells[i] );
-    std::vector<nd_point_t> points = points_inside_window( ground_truth,
-							   region );
+    std::vector<nd_point_t> points = points_inside_window( region,
+							   ground_truth );
     
     // now compute the empty region of the cell
     std::vector<nd_aabox_t> empty_regions = compute_empty_regions( points,
@@ -188,7 +187,7 @@ simulate_run_until_all_points_found
     // Take any points inside the cell
     // and add as observations
     std::vector<nd_point_t> new_obs;
-    nd_aabox_t region = planner.visisted_grid().region( next_cell );
+    nd_aabox_t region = planner.visited_grid().region( next_cell );
     std::vector<nd_point_t> obs = planner.observations();
     for( std::size_t p_i = 0;
 	 p_i < ground_truth.size();
@@ -250,8 +249,10 @@ simulate_run_until_all_points_found
     
     // print the process model parameters to user
     if( out_progress ) {
-      (*out_progress) << "[" << iteration << "]   " << std::endl;
-      (*out_progress) << process->_state << std::endl;
+
+      // TODO: get an interface for printing out hte inner model state
+      //(*out_progress) << "[" << iteration << "]   " << std::endl;
+      //(*out_progress) << process->_state << std::endl;
       
       // print status to user
       (*out_progress) << "[" << iteration << "]   "

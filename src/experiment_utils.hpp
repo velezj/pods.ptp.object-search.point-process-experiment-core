@@ -34,11 +34,11 @@ namespace point_process_experiment_core {
   // entire ground truth data of points to find.
   //
   // Returns the decision trace of observed grid cells
-  std::vector<marked_grid_cell_t>
+  std::vector<point_process_core::marked_grid_cell_t>
   simulate_run_until_all_points_found
   ( planner_core::grid_planner_t& planner,
     const math_core::nd_aabox_t& initial_window,
-    const std::vector<nd_point_t>& ground_truth,
+    const std::vector<math_core::nd_point_t>& ground_truth,
     boost::optional<std::ostream>& out_meta,
     boost::optional<std::ostream>& out_trace,
     boost::optional<std::ostream>& out_progress );

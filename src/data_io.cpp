@@ -2,7 +2,8 @@
 #include "data_io.hpp"
 #include <iostream>
 #include <math-core/geom.hpp>
-
+#include <string>
+#include <sstream>
 
 using namespace math_core;
 using namespace point_process_experiment_core;
@@ -18,12 +19,13 @@ parse_points_from_ssv_stream( std::istream& is )
   
   // We assume that there is exactly one point per line (or empty lines)
   std::string line;
-  while( line = std::getline( is ) ) {
+  while( std::getline( is, line ) ) {
 
     // read the data s a vector of doubles
     std::vector<double> data;
     double temp;
-    while( line >> temp ) {
+    std::istringstream line_stream( line );
+    while( line_stream >> temp ) {
       data.push_back( temp );
     }
 
