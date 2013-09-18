@@ -6,6 +6,7 @@
 #include <planner-core/planner.hpp>
 #include <boost/optional.hpp>
 #include <iosfwd>
+#include <boost/shared_ptr.hpp>
 
 
 namespace point_process_experiment_core {
@@ -21,7 +22,7 @@ namespace point_process_experiment_core {
   // to the marked grid used by the planner! )
   math_core::nd_aabox_t
   setup_planner_with_initial_observations
-  ( planner_core::grid_planner_t& planner,
+  ( boost::shared_ptr<planner_core::grid_planner_t>& planner,
     const math_core::nd_aabox_t& initial_window,
     const std::vector<math_core::nd_point_t>& ground_truth );
 
@@ -36,12 +37,12 @@ namespace point_process_experiment_core {
   // Returns the decision trace of observed grid cells
   std::vector<point_process_core::marked_grid_cell_t>
   simulate_run_until_all_points_found
-  ( planner_core::grid_planner_t& planner,
+  ( boost::shared_ptr<planner_core::grid_planner_t>& planner,
     const math_core::nd_aabox_t& initial_window,
     const std::vector<math_core::nd_point_t>& ground_truth,
-    boost::optional<std::ostream>& out_meta,
-    boost::optional<std::ostream>& out_trace,
-    boost::optional<std::ostream>& out_progress );
+    std::ostream& out_meta,
+    std::ostream& out_trace,
+    std::ostream& out_progress );
 
 }
 
