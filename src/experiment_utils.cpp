@@ -112,6 +112,19 @@ namespace point_process_experiment_core {
     std::cout << "-- init window: " << initial_window << std::endl;
     std::cout << "-- actual window: " << actual_window << std::endl;
     std::cout << "-- #cells: " << cells.size() << std::endl;
+
+    if( true ) {
+      for( size_t i = 0; i < seen_points.size(); ++i ) {
+	if( seen_points[i].n != 2 ) {
+	  std::cout << "!! seen_points[" << i << "].n = " << seen_points[i].n << std::endl;
+	} 
+      }
+      for( size_t i = 0; i < ground_truth.size(); ++i ) {
+	if( ground_truth[i].n != 2 ) {
+	  std::cout << "!! ground_truth[" << i << "].n = " << ground_truth[i].n << std::endl;
+	} 
+      }
+    }
   
     // now update the planner with the observations of the points
     planner->add_observations( seen_points );
