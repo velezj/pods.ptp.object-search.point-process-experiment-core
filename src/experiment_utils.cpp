@@ -129,6 +129,10 @@ namespace point_process_experiment_core {
     // now update the planner with the observations of the points
     planner->add_observations( seen_points );
 
+    if( true ) {
+      std::cout << "-- adding negative regions" << std::endl;
+    }
+
     // now add the fully negative cell regions
     std::vector<marked_grid_cell_t> partial_cells;
     for( size_t i = 0; i < cells.size(); ++i ) {
@@ -143,6 +147,10 @@ namespace point_process_experiment_core {
 	// store for future processing
 	partial_cells.push_back( cells[i] );
       }
+    }
+
+    if( true ) {
+      std::cout << "-- adding empty regions " << partial_cells.size() << std::endl;
     }
 
     // deal with partial cells, which have some obseved points in them.
@@ -169,6 +177,10 @@ namespace point_process_experiment_core {
     for( size_t i = 0; i < cells.size(); ++i ) {
       planner->add_visited_cell( cells[ i ] );
     }
+
+    // setup the current position
+    planner->set_current_position( actual_window.start +
+				   ( 0.5 * (actual_window.end - actual_window.start) ) );
 
     // return the actual window used
     return actual_window;
