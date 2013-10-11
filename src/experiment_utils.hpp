@@ -23,6 +23,7 @@ namespace point_process_experiment_core {
   math_core::nd_aabox_t
   setup_planner_with_initial_observations
   ( boost::shared_ptr<planner_core::grid_planner_t>& planner,
+    bool add_empty_regions,
     const math_core::nd_aabox_t& initial_window,
     const std::vector<math_core::nd_point_t>& ground_truth );
 
@@ -38,11 +39,13 @@ namespace point_process_experiment_core {
   std::vector<point_process_core::marked_grid_cell_t>
   simulate_run_until_all_points_found
   ( boost::shared_ptr<planner_core::grid_planner_t>& planner,
+    bool add_empty_regions, 
     const math_core::nd_aabox_t& initial_window,
     const std::vector<math_core::nd_point_t>& ground_truth,
     std::ostream& out_meta,
     std::ostream& out_trace,
-    std::ostream& out_progress );
+    std::ostream& out_progress,
+    std::ostream& out_verbose_trace );
 
 }
 
