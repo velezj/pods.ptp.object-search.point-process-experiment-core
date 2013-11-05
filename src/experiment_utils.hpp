@@ -7,6 +7,10 @@
 #include <boost/optional.hpp>
 #include <iosfwd>
 #include <boost/shared_ptr.hpp>
+#include <point-process-core/point_process.hpp>
+#include <boost/function.hpp>
+#include <stdexcept>
+#include <boost/exception/all.hpp>
 
 
 namespace point_process_experiment_core {
@@ -46,6 +50,90 @@ namespace point_process_experiment_core {
     std::ostream& out_trace,
     std::ostream& out_progress,
     std::ostream& out_verbose_trace );
+
+
+
+  // Description:
+  // Exception indicating that an unknown world was asked for
+  struct unknown_world_exception : public virtual std::exception,
+				   public virtual boost::exception
+  {
+  };
+  struct unknown_model_exception : public virtual std::exception,
+				   public virtual boost::exception
+  {
+  };
+  struct unknown_planner_exception : public virtual std::exception,
+				     public virtual boost::exception
+  {
+  };
+  struct id_already_used_exception : public virtual std::exception,
+				     public virtual boost::exception
+  {
+  };
+
+
+
+
+  // Description:
+  // Returns the ground truth for a vicen world (by id)
+  std::vector<math_core::nd_point_t>
+  groundtruth_for_world( const std::string& id );
+
+  // Description:
+  // Returns the window for a world (by id)
+  math_core::nd_aabox_t
+  window_for_world( const std::string& id );
+
+  // Description:
+  // Returns a model by id
+  boost::shared_ptr<point_process_core::mcmc_point_process_t>
+  get_model_by_id( const std::string& id );
+
+  // Description:
+  // Returns a planner by if
+  boost::shared_ptr<planner_core::grid_planner_t>
+  get_planner_by_id( const std::string& id );
+
+
+  // Description:
+  // Registers a world with a unique id.
+  void
+  register_world
+  ( const std::string& id,
+    const boost::function<std::vector<math_core::nd_point_t> ()>& groundtruth,
+    const boost::function< math_core::nd_aabox_t () >& window );
+  
+  // Description:
+  // Registers a model with id
+  void
+  register_model
+  ( const std::string& id,
+    boost::function< boost::shared_ptr<point_process_core::mcmc_point_process_t> () >& model );
+  
+  // Description:
+  // Registeres a planer with id
+  void
+  register_planner
+  ( const std::string& id,
+    boost::function< boost::shared_ptr<planner_core::grid_planner_t> () >& planner );
+
+
+  // Description:
+  // Return all the registered worlds
+  std::vector<std::string>
+  get_registered_worlds();
+
+
+  // Description:
+  // Returns all registered models
+  std::vector<std::string>
+  get_registered_models();
+  
+  // Description:
+  // Returns registered planners
+  std::vector<std::string>
+  get_registered_planners();
 
 }
 

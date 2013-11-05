@@ -106,8 +106,11 @@ namespace point_process_experiment_core {
     nd_aabox_t actual_window = enclosing_window_for_cells( grid, cells );
 
     // grab the ground truth points inside of the window
-    std::vector<nd_point_t> seen_points = points_inside_window(actual_window,
-							       ground_truth);
+    std::vector<nd_point_t> seen_points;
+    if( !undefined(actual_window) ) {
+      seen_points = points_inside_window(actual_window,
+					 ground_truth);
+    }
 
     std::cout << "-- #seen points: " << seen_points.size() << std::endl;
     std::cout << "-- init window: " << initial_window << std::endl;
@@ -368,11 +371,146 @@ namespace point_process_experiment_core {
 
 
   //==========================================================================
+
+  struct world_func_pair_t
+  {
+    boost::function< std::vector<math_core::nd_point_t> () > groundtruth;
+    boost::function< math_core::nd_aabox_t () > window;
+  };
+  std::map< std::string, world_func_pair_t > _g_worlds;
+
+  void
+  register_world
+  ( const std::string& id,
+    const boost::function<std::vector<math_core::nd_point_t> ()>& groundtruth,
+    const boost::function< math_core::nd_aabox_t () >& window )
+  {
+    if( _g_worlds.find( id ) != _g_worlds.end() ) {
+      BOOST_THROW_EXCEPTION( id_already_used_exception() );
+    }
+
+    world_func_pair_t g;
+    g.groundtruth = groundtruth;
+    g.window = window;
+    _g_worlds[ id ] = g;
+  }
+
+
   //==========================================================================
+
+  std::map< std::string, boost::function<  boost::shared_ptr<mcmc_point_process_t> () > > _g_models;
+
+  void
+  register_model
+  ( const std::string& id,
+    boost::function< boost::shared_ptr<mcmc_point_process_t> () >& model )
+  {
+    if( _g_models.find( id ) != _g_models.end() ) {
+      BOOST_THROW_EXCEPTION( id_already_used_exception() );
+    }
+
+    _g_models[ id ] = model;
+  }
+
+
   //==========================================================================
+
+  std::map< std::string, boost::function< boost::shared_ptr<grid_planner_t> () > > _g_planners;
+
+  void
+  register_planner
+  ( const std::string& id,
+    boost::function< boost::shared_ptr<grid_planner_t> () >& planner )
+  {
+    if( _g_planners.find( id ) != _g_planners.end() ) {
+      BOOST_THROW_EXCEPTION( id_already_used_exception() );
+    }
+
+    _g_planners[ id ] = planner;
+  }
+
+
   //==========================================================================
+  
+  std::vector<math_core::nd_point_t>
+  groundtruth_for_world( const std::string& id )
+  {
+    if( _g_worlds.find( id ) == _g_worlds.end() ) {
+      BOOST_THROW_EXCEPTION( unknown_world_exception() );
+    }
+    return _g_worlds[ id ].groundtruth();
+  }
+
   //==========================================================================
+
+  math_core::nd_aabox_t
+  window_for_world( const std::string& id )
+  {
+    if( _g_worlds.find( id ) == _g_worlds.end() ) {
+      BOOST_THROW_EXCEPTION( unknown_world_exception() );
+    }
+    return _g_worlds[ id ].window();
+  }
+
   //==========================================================================
+
+  boost::shared_ptr<point_process_core::mcmc_point_process_t>
+  get_model_by_id( const std::string& id )
+  {
+    if( _g_models.find( id ) == _g_models.end() ) {
+      BOOST_THROW_EXCEPTION( unknown_model_exception() );
+    }
+    return _g_models[ id ]();
+  }
+
+  //==========================================================================
+
+  boost::shared_ptr<planner_core::grid_planner_t>
+  get_planner_by_id( const std::string& id )
+  {
+    if( _g_planners.find( id ) == _g_planners.end() ) {
+      BOOST_THROW_EXCEPTION( unknown_planner_exception() );
+    }
+    return _g_planners[ id ]();
+  }
+  
+  
+  //==========================================================================
+
+  template< typename TK, typename TV >
+  std::vector<TK>
+  keys( const std::map<TK,TV>& m ) {
+    std::vector<TK> k;
+    for( auto item : m ) {
+      k.push_back( item.first );
+    }
+    return k;
+  }
+
+  //==========================================================================
+
+  std::vector<std::string>
+  get_registered_worlds()
+  {
+    return keys( _g_worlds );
+  }
+  
+  //==========================================================================
+  
+  std::vector<std::string>
+  get_registered_models()
+  {
+    return keys( _g_models );
+  }
+  
+  //==========================================================================
+
+  std::vector<std::string>
+  get_registered_planners()
+  {
+    return keys( _g_planners );
+  }
+
   //==========================================================================
   //==========================================================================
   //==========================================================================
