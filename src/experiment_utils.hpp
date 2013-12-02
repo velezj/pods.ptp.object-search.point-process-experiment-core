@@ -86,14 +86,16 @@ namespace point_process_experiment_core {
   window_for_world( const std::string& id );
 
   // Description:
-  // Returns a model by id
+  // Returns a model by id for the given window
   boost::shared_ptr<point_process_core::mcmc_point_process_t>
-  get_model_by_id( const std::string& id );
+  get_model_by_id( const std::string& id,
+		   const math_core::nd_aabox_t& window );
 
   // Description:
-  // Returns a planner by if
+  // Returns a planner by id which will use hte given model
   boost::shared_ptr<planner_core::grid_planner_t>
-  get_planner_by_id( const std::string& id );
+  get_planner_by_id( const std::string& id,
+		     boost::shared_ptr< point_process_core::mcmc_point_process_t>& model );
 
 
   // Description:
@@ -109,14 +111,14 @@ namespace point_process_experiment_core {
   void
   register_model
   ( const std::string& id,
-    boost::function< boost::shared_ptr<point_process_core::mcmc_point_process_t> () >& model );
+    const boost::function< boost::shared_ptr<point_process_core::mcmc_point_process_t> ( const math_core::nd_aabox_t& ) >& model );
   
   // Description:
   // Registeres a planer with id
   void
   register_planner
   ( const std::string& id,
-    boost::function< boost::shared_ptr<planner_core::grid_planner_t> () >& planner );
+    const boost::function< boost::shared_ptr<planner_core::grid_planner_t> (boost::shared_ptr< point_process_core::mcmc_point_process_t>&) >& planner );
 
 
   // Description:
@@ -134,6 +136,11 @@ namespace point_process_experiment_core {
   // Returns registered planners
   std::vector<std::string>
   get_registered_planners();
+
+
+  // Description:
+  // Clear all registered worlds,models,and planners
+  void clear_all_registered_experiments();
 
 }
 

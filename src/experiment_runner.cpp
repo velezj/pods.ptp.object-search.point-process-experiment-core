@@ -34,11 +34,11 @@ namespace point_process_experiment_core {
     
     // build up the point process model
     boost::shared_ptr< mcmc_point_process_t > planner_process 
-      = get_model_by_id( model );
+      = get_model_by_id( model, world_window );
     
     // build up the planner
     boost::shared_ptr<grid_planner_t> planner 
-      = get_planner_by_id( planner_id );
+      = get_planner_by_id( planner_id, planner_process  );
     
     // get the initial, window
     nd_aabox_t initial_window = 
@@ -56,6 +56,7 @@ namespace point_process_experiment_core {
     std::ofstream out_meta( p2l::common::context_filename( "planner.meta" ) );
     std::ofstream out_trace( p2l::common::context_filename( "planner.trace" ) );
     std::ofstream out_verbose_trace( p2l::common::context_filename( "planner.verbose-trace" ) );
+    std::cout << "context filename are in: " << p2l::common::context_filename( "<filename>") << std::endl;
     
     // run the planner
     std::vector<marked_grid_cell_t> trace =

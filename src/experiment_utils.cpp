@@ -398,12 +398,12 @@ namespace point_process_experiment_core {
 
   //==========================================================================
 
-  std::map< std::string, boost::function<  boost::shared_ptr<mcmc_point_process_t> () > > _g_models;
+  std::map< std::string, boost::function<  boost::shared_ptr<mcmc_point_process_t> (const math_core::nd_aabox_t&) > > _g_models;
 
   void
   register_model
   ( const std::string& id,
-    boost::function< boost::shared_ptr<mcmc_point_process_t> () >& model )
+    const boost::function< boost::shared_ptr<mcmc_point_process_t> (const math_core::nd_aabox_t& ) >& model )
   {
     if( _g_models.find( id ) != _g_models.end() ) {
       BOOST_THROW_EXCEPTION( id_already_used_exception() );
@@ -415,12 +415,12 @@ namespace point_process_experiment_core {
 
   //==========================================================================
 
-  std::map< std::string, boost::function< boost::shared_ptr<grid_planner_t> () > > _g_planners;
+  std::map< std::string, boost::function< boost::shared_ptr<grid_planner_t> (boost::shared_ptr<point_process_core::mcmc_point_process_t>&) > > _g_planners;
 
   void
   register_planner
   ( const std::string& id,
-    boost::function< boost::shared_ptr<grid_planner_t> () >& planner )
+    const boost::function< boost::shared_ptr<grid_planner_t> (boost::shared_ptr<point_process_core::mcmc_point_process_t>&) >& planner )
   {
     if( _g_planners.find( id ) != _g_planners.end() ) {
       BOOST_THROW_EXCEPTION( id_already_used_exception() );
@@ -455,23 +455,25 @@ namespace point_process_experiment_core {
   //==========================================================================
 
   boost::shared_ptr<point_process_core::mcmc_point_process_t>
-  get_model_by_id( const std::string& id )
+  get_model_by_id( const std::string& id,
+		   const math_core::nd_aabox_t& window )
   {
     if( _g_models.find( id ) == _g_models.end() ) {
       BOOST_THROW_EXCEPTION( unknown_model_exception() );
     }
-    return _g_models[ id ]();
+    return _g_models[ id ]( window );
   }
 
   //==========================================================================
 
   boost::shared_ptr<planner_core::grid_planner_t>
-  get_planner_by_id( const std::string& id )
+  get_planner_by_id( const std::string& id,
+		     boost::shared_ptr<point_process_core::mcmc_point_process_t>& model )
   {
     if( _g_planners.find( id ) == _g_planners.end() ) {
       BOOST_THROW_EXCEPTION( unknown_planner_exception() );
     }
-    return _g_planners[ id ]();
+    return _g_planners[ id ]( model );
   }
   
   
@@ -512,6 +514,15 @@ namespace point_process_experiment_core {
   }
 
   //==========================================================================
+
+  void
+  clear_all_registered_experiments()
+  {
+    _g_worlds.clear();
+    _g_models.clear();
+    _g_planners.clear();
+  }
+
   //==========================================================================
   //==========================================================================
   //==========================================================================
