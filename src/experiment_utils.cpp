@@ -112,11 +112,21 @@ namespace point_process_experiment_core {
 					 ground_truth);
     }
 
+    std::cout << "-- #groundtruth: " << ground_truth.size() << std::endl;
     std::cout << "-- #seen points: " << seen_points.size() << std::endl;
     std::cout << "-- init window: " << initial_window << std::endl;
     std::cout << "-- actual window: " << actual_window << std::endl;
     std::cout << "-- #cells: " << cells.size() << std::endl;
-    
+
+
+    // Ok, since we are batch updating the planner, temporarily set the
+    // update_model_mcmc_iterations to 0
+    grid_planner_parameters_t old_params 
+      = planner->get_grid_planner_parameters();
+    grid_planner_parameters_t batch_params = old_params;
+    batch_params.update_model_mcmc_iterations = 0;
+    planner->set_grid_planner_parameters( batch_params );
+
 
     if( true ) {
       for( size_t i = 0; i < seen_points.size(); ++i ) {
@@ -130,6 +140,11 @@ namespace point_process_experiment_core {
 	} 
       }
     }
+
+    // store the last of the seen points to add at the very end
+    std::vector<nd_point_t> last_seen_point;
+    last_seen_point.push_back( seen_points.back() );
+    seen_points.pop_back();
   
     // now update the planner with the observations of the points
     planner->add_observations( seen_points );
@@ -180,6 +195,14 @@ namespace point_process_experiment_core {
       }
     }
 
+    // restore the grid planner params for non-batch use
+    planner->set_grid_planner_parameters( old_params );
+
+    // force a *single* model update sequence of mcmc steps
+    // for the entire batch of new observations
+    planner->add_observations( last_seen_point );
+
+
     // mark all of the inital cells as visited
     for( size_t i = 0; i < cells.size(); ++i ) {
       planner->add_visited_cell( cells[ i ] );
@@ -189,6 +212,7 @@ namespace point_process_experiment_core {
     planner->set_current_position( actual_window.start +
 				   ( 0.5 * (actual_window.end - actual_window.start) ) );
 
+    
     // return the actual window used
     return actual_window;
   }
