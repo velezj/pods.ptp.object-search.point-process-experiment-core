@@ -45,6 +45,7 @@ namespace point_process_experiment_core {
   ( boost::shared_ptr<planner_core::grid_planner_t>& planner,
     bool add_empty_regions, 
     const math_core::nd_aabox_t& initial_window,
+    const double& fraction_truth_to_find,
     const std::vector<math_core::nd_point_t>& ground_truth,
     std::ostream& out_meta,
     std::ostream& out_trace,

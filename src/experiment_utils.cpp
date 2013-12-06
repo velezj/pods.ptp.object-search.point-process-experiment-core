@@ -226,6 +226,7 @@ namespace point_process_experiment_core {
   ( boost::shared_ptr<grid_planner_t>& planner,
     bool add_empty_regions,
     const nd_aabox_t& initial_window,
+    const double& fraction_truth_to_find,
     const std::vector<nd_point_t>& ground_truth,
     std::ostream& out_meta,
     std::ostream& out_trace,
@@ -236,11 +237,25 @@ namespace point_process_experiment_core {
     // the iteration counter
     size_t iteration = 0;
 
+    // compute how many points we need to find to have found
+    // the wanted fraction of the total points
+    size_t goal_num_points_to_find = ground_truth.size();
+    if( fraction_truth_to_find < 1 ) {
+      goal_num_points_to_find = ceil( fraction_truth_to_find * ground_truth.size() );
+
+      // just in case the fraction times the size with a ceil somehow
+      // pops us one over, fix it
+      if( goal_num_points_to_find > ground_truth.size() ) {
+	goal_num_points_to_find = ground_truth.size();
+      }
+    }
+
     if( true ) {
       (out_progress) << "Starting SIMULATION: " << std::endl;
       (out_progress) << "  Init Window: " << initial_window << std::endl;
       (out_progress) << "  Init #points: " << planner->observations().size() << std::endl;
       (out_progress) << "  Total Points: " << ground_truth.size() << std::endl;
+      (out_progress) << "  Goal #points: " << goal_num_points_to_find << " (" << fraction_truth_to_find << ")" << std::endl;
     }
 
     // the list of chosen cells
@@ -248,8 +263,8 @@ namespace point_process_experiment_core {
     std::vector<nd_aabox_t> chosen_regions;
     std::vector< bool > chosen_region_negative;
 
-    // run the planner while we have no found everything
-    while( planner->observations().size() < ground_truth.size() ) {
+    // run the planner while we have no found the goal number of points
+    while( planner->observations().size() < goal_num_points_to_find ) {
 
       // pint out the iteration number
       out_verbose_trace << "+ITERATION+ " << iteration << std::endl;

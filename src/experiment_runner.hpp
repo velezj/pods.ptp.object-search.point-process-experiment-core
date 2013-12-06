@@ -17,8 +17,9 @@ namespace point_process_experiment_core {
     const std::string& planner,
     const bool add_empty_regions,
     const double& initial_window_fraction,
-    const std::string& experiment_id,
-    const bool initial_window_is_centered = false);
+    const bool initial_window_is_centered,
+    const double& fraction_truth_to_find,
+    const std::string& experiment_id );
 
 
 }
