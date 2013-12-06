@@ -23,7 +23,8 @@ namespace point_process_experiment_core {
     const std::string& planner_id,
     const bool add_empty_regions,
     const double& initial_window_fraction,
-    const std::string& experiment_id ) 
+    const std::string& experiment_id,
+    const bool initial_window_is_centered) 
   {
     // push the experiment id as a context
     p2l::common::push_context( p2l::common::context_t( experiment_id ) );
@@ -44,6 +45,13 @@ namespace point_process_experiment_core {
     nd_aabox_t initial_window = 
       aabox( world_window.start, 
 	     world_window.start + ( world_window.end - world_window.start ) * initial_window_fraction );
+    if( initial_window_is_centered ) {
+      
+      // shift the window to be centered
+      nd_vector_t shift = 0.5 * ( world_window.end - initial_window.end );
+      initial_window = aabox( initial_window.start + shift,
+			      initial_window.end + shift );
+    }
     
     // seed the planner
     initial_window =

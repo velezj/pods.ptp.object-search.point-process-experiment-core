@@ -117,6 +117,7 @@ namespace point_process_experiment_core {
     std::cout << "-- init window: " << initial_window << std::endl;
     std::cout << "-- actual window: " << actual_window << std::endl;
     std::cout << "-- #cells: " << cells.size() << std::endl;
+    std::cout << "-- #total cells: " << grid.all_cells().size() << std::endl;
 
 
     // Ok, since we are batch updating the planner, temporarily set the
