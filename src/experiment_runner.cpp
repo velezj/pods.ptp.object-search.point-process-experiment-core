@@ -36,7 +36,7 @@ namespace point_process_experiment_core {
     
     // build up the point process model
     boost::shared_ptr< mcmc_point_process_t > planner_process 
-      = get_model_by_id( model, world_window );
+      = get_model_by_id( model, world_window, ground_truth );
     
     // build up the planner
     boost::shared_ptr<grid_planner_t> planner 

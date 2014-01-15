@@ -89,8 +89,9 @@ namespace point_process_experiment_core {
   // Description:
   // Returns a model by id for the given window
   boost::shared_ptr<point_process_core::mcmc_point_process_t>
-  get_model_by_id( const std::string& id,
-		   const math_core::nd_aabox_t& window );
+  get_model_by_id( const std::string& id,		   
+		   const math_core::nd_aabox_t& window,
+		   const std::vector<math_core::nd_point_t>& groundtruth );
 
   // Description:
   // Returns a planner by id which will use hte given model
@@ -112,7 +113,8 @@ namespace point_process_experiment_core {
   void
   register_model
   ( const std::string& id,
-    const boost::function< boost::shared_ptr<point_process_core::mcmc_point_process_t> ( const math_core::nd_aabox_t& ) >& model );
+    const boost::function< boost::shared_ptr<point_process_core::mcmc_point_process_t> ( const math_core::nd_aabox_t&,
+											 const std::vector<math_core::nd_point_t>& ) >& model );
   
   // Description:
   // Registeres a planer with id

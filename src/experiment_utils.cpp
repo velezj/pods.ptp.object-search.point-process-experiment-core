@@ -443,12 +443,12 @@ namespace point_process_experiment_core {
 
   //==========================================================================
 
-  std::map< std::string, boost::function<  boost::shared_ptr<mcmc_point_process_t> (const math_core::nd_aabox_t&) > > _g_models;
+  std::map< std::string, boost::function<  boost::shared_ptr<mcmc_point_process_t> (const math_core::nd_aabox_t&, const std::vector<math_core::nd_point_t>& ) > > _g_models;
 
   void
   register_model
   ( const std::string& id,
-    const boost::function< boost::shared_ptr<mcmc_point_process_t> (const math_core::nd_aabox_t& ) >& model )
+    const boost::function< boost::shared_ptr<mcmc_point_process_t> (const math_core::nd_aabox_t&, const std::vector<math_core::nd_point_t>& ) >& model )
   {
     if( _g_models.find( id ) != _g_models.end() ) {
       BOOST_THROW_EXCEPTION( id_already_used_exception() );
@@ -501,12 +501,13 @@ namespace point_process_experiment_core {
 
   boost::shared_ptr<point_process_core::mcmc_point_process_t>
   get_model_by_id( const std::string& id,
-		   const math_core::nd_aabox_t& window )
+		   const math_core::nd_aabox_t& window,
+		   const std::vector<math_core::nd_point_t>& groundtruth )
   {
     if( _g_models.find( id ) == _g_models.end() ) {
       BOOST_THROW_EXCEPTION( unknown_model_exception() );
     }
-    return _g_models[ id ]( window );
+    return _g_models[ id ]( window, groundtruth );
   }
 
   //==========================================================================
