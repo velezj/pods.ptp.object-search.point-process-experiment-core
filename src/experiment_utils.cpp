@@ -272,7 +272,7 @@ namespace point_process_experiment_core {
       // plot out the planner
       std::ostringstream plot_oss;
       plot_oss << "iter-" << iteration << "-planner";
-      planner->plot( plot_oss.str() );
+      //planner->plot( plot_oss.str() );
     
       // Choose the next observation cell
       marked_grid_cell_t next_cell = 
