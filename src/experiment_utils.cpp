@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <math-core/io.hpp>
 
+#define VERBOSE false
+#define PRINT_PROGRESS true
 
 using namespace math_core;
 using namespace point_process_core;
@@ -112,12 +114,14 @@ namespace point_process_experiment_core {
 					 ground_truth);
     }
 
-    std::cout << "-- #groundtruth: " << ground_truth.size() << std::endl;
-    std::cout << "-- #seen points: " << seen_points.size() << std::endl;
-    std::cout << "-- init window: " << initial_window << std::endl;
-    std::cout << "-- actual window: " << actual_window << std::endl;
-    std::cout << "-- #cells: " << cells.size() << std::endl;
-    std::cout << "-- #total cells: " << grid.all_cells().size() << std::endl;
+    if( VERBOSE ) {
+      std::cout << "-- #groundtruth: " << ground_truth.size() << std::endl;
+      std::cout << "-- #seen points: " << seen_points.size() << std::endl;
+      std::cout << "-- init window: " << initial_window << std::endl;
+      std::cout << "-- actual window: " << actual_window << std::endl;
+      std::cout << "-- #cells: " << cells.size() << std::endl;
+      std::cout << "-- #total cells: " << grid.all_cells().size() << std::endl;
+    }
 
 
     // Ok, since we are batch updating the planner, temporarily set the
@@ -129,7 +133,7 @@ namespace point_process_experiment_core {
     planner->set_grid_planner_parameters( batch_params );
 
 
-    if( true ) {
+    if( false ) {
       for( size_t i = 0; i < seen_points.size(); ++i ) {
 	if( seen_points[i].n != 2 ) {
 	  std::cout << "!! seen_points[" << i << "].n = " << seen_points[i].n << std::endl;
@@ -150,7 +154,7 @@ namespace point_process_experiment_core {
     // now update the planner with the observations of the points
     planner->add_observations( seen_points );
 
-    if( true ) {
+    if( true && VERBOSE ) {
       std::cout << "-- adding negative regions" << std::endl;
     }
 
@@ -170,7 +174,7 @@ namespace point_process_experiment_core {
       }
     }
 
-    if( true && add_empty_regions) {
+    if( true && VERBOSE && add_empty_regions) {
       std::cout << "-- adding empty regions " << partial_cells.size() << std::endl;
     }
 
@@ -250,7 +254,7 @@ namespace point_process_experiment_core {
       }
     }
 
-    if( true ) {
+    if( true && PRINT_PROGRESS ) {
       (out_progress) << "Starting SIMULATION: " << std::endl;
       (out_progress) << "  Init Window: " << initial_window << std::endl;
       (out_progress) << "  Init #points: " << planner->observations().size() << std::endl;
@@ -380,7 +384,7 @@ namespace point_process_experiment_core {
 
     
       // print the process model parameters to user
-      if( true ) {
+      if( true && PRINT_PROGRESS ) {
 
 	// TODO: get an interface for printing out hte inner model state
 	//(*out_progress) << "[" << iteration << "]   " << std::endl;

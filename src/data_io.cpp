@@ -5,6 +5,8 @@
 #include <string>
 #include <sstream>
 
+#define VERBOSE false
+
 using namespace math_core;
 
 
@@ -38,7 +40,7 @@ namespace point_process_experiment_core {
       // add a new point structure from the data vector
       points.push_back( point( data ) );
 
-      if( true ) {
+      if( VERBOSE ) {
 	std::cout << "..parsed " << data.size() << "-dim point" << std::endl;
       }
     }
