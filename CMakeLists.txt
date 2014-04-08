@@ -44,12 +44,13 @@ pods_use_pkg_config_packages(p2l-point-process-experiment-core
     p2l-probability-core lcmtypes_p2l-probability-core 
     p2l-point-process-core
     p2l-planner-core
-    boost-1.54.0)
+    boost-1.54.0
+    boost-1.54.0-filesystem)
 pods_install_libraries( p2l-point-process-experiment-core )
 pods_install_pkg_config_file(p2l-point-process-experiment-core
     CFLAGS
     LIBS -lp2l-point-process-experiment-core
-    REQUIRES p2l-common p2l-math-core p2l-probability-core p2l-point-process-core p2l-planner-core boost-1.54.0
+    REQUIRES p2l-common p2l-math-core p2l-probability-core p2l-point-process-core p2l-planner-core boost-1.54.0 boost-1.54.0-filesystem
     VERSION 0.0.1)
 
 

@@ -4,12 +4,14 @@
 #include <p2l-common/context.hpp>
 #include <iostream>
 #include <fstream>
+#include <boost/filesystem.hpp>
+
 
 
 using namespace math_core;
 using namespace planner_core;
 using namespace point_process_core;
-
+using namespace boost::filesystem;
 
 namespace point_process_experiment_core {
 
@@ -62,6 +64,10 @@ namespace point_process_experiment_core {
 					       ground_truth );
     
     // create the meta and trace files
+    std::string temp;
+    path p;
+    p = path(p2l::common::context_filename( "planner.meta" ));
+    create_directories( p.parent_path() );
     std::ofstream out_meta( p2l::common::context_filename( "planner.meta" ) );
     std::ofstream out_trace( p2l::common::context_filename( "planner.trace" ) );
     std::ofstream out_verbose_trace( p2l::common::context_filename( "planner.verbose-trace" ) );
