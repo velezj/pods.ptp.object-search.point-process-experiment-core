@@ -16,7 +16,7 @@ namespace point_process_experiment_core {
 
   //====================================================================
 
-  void
+  std::vector<marked_grid_cell_t>
   run_experiment
   ( const std::string& world,
     const std::string& model,
@@ -78,7 +78,8 @@ namespace point_process_experiment_core {
 					   out_trace,
 					   std::cout,
 					   out_verbose_trace);
-    
+
+    return trace;
   }
   
 

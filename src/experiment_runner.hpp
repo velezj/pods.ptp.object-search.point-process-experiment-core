@@ -3,6 +3,8 @@
 #define __P2L_POINT_PROCESS_EXPERIMENT_CORE_experiment_runner_HPP__
 
 #include <string>
+#include <vector>
+#include <point-process-core/marked_grid.hpp>
 
 namespace point_process_experiment_core {
 
@@ -10,7 +12,7 @@ namespace point_process_experiment_core {
   // Description:
   // Run an experiment.
   // With a given world,planner,and model.
-  void
+  std::vector<point_process_core::marked_grid_cell_t>
   run_experiment
   ( const std::string& world,
     const std::string& model,
