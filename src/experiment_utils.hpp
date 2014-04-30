@@ -101,6 +101,16 @@ namespace point_process_experiment_core {
 
 
   // Description:
+  // Returns a bool marked grid which is used as the action grid for the
+  // given planner. Furthermore, the grid is marked with true iff that grid
+  // point contains data from the given world
+  point_process_core::marked_grid_t<bool>
+  get_grid_for_setup( const std::string& world_id,
+		      const std::string& model_id,
+		      const std::string& planner_id );
+
+
+  // Description:
   // Registers a world with a unique id.
   void
   register_world

@@ -14,7 +14,7 @@ namespace point_process_experiment_core {
   // Given a SSV (Space Delimited Values) stream with point data,
   // returns a vector of ndpoint_t representing the point data.
   std::vector<math_core::nd_point_t> 
-  parse_points_from_ssv_stream( std::istream& is );
+  parse_points_from_ssv_stream( std::istream& is, bool lisp_format=true );
 
 }
 

@@ -525,6 +525,36 @@ namespace point_process_experiment_core {
     }
     return _g_planners[ id ]( model );
   }
+
+
+  //==========================================================================
+
+
+  point_process_core::marked_grid_t<bool>
+  get_grid_for_setup( const std::string& world_id,
+		      const std::string& model_id,
+		      const std::string& planner_id )
+  {
+    // build everything up and get the resulting visited grid from the 
+    // planner
+    std::vector<math_core::nd_point_t> gt = groundtruth_for_world( world_id );
+    math_core::nd_aabox_t window = window_for_world( world_id );
+    boost::shared_ptr<point_process_core::mcmc_point_process_t> model
+      = get_model_by_id( model_id, window, gt );
+    boost::shared_ptr<planner_core::grid_planner_t> planner
+      = get_planner_by_id( planner_id, model );
+
+    point_process_core::marked_grid_t<bool> grid 
+      = planner->visited_grid().copy_structure<bool>();
+      
+    // ok, now convert the groundtruth into the grid
+    for( auto p : gt ) {
+      grid.set( p, true );
+    }
+
+    // reutrn hte grid
+    return grid;
+  }
   
   
   //==========================================================================

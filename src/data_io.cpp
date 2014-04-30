@@ -16,7 +16,7 @@ namespace point_process_experiment_core {
   //===========================================================================
 
   std::vector<nd_point_t> 
-  parse_points_from_ssv_stream( std::istream& is )
+  parse_points_from_ssv_stream( std::istream& is, bool lisp_format )
   {
 
     std::vector<nd_point_t> points;
@@ -31,7 +31,12 @@ namespace point_process_experiment_core {
       std::string stemp;
       std::istringstream line_stream( line );
       while( line_stream >> stemp ) {
-	std::istringstream iss( stemp.substr(0,stemp.size() - 2) );
+	std::istringstream iss;
+	if( lisp_format ) {
+	  iss.str( stemp.substr(0,stemp.size() - 2) );
+	} else {
+	  iss.str( stemp );
+	}
 	if( iss >> temp && data.size() < 2 ) {
 	  data.push_back( temp );
 	}
