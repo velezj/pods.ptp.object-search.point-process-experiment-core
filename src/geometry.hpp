@@ -3,7 +3,7 @@
 #define __POINT_PROCESS_EXPERIMENT_CORE_SIMULATED_DATA_HPP__
 
 #include <vector>
-#include <lcmtypes/p2l_math_core.hpp>
+#include <math-core/types.hpp>
 
 namespace point_process_experiment_core {
   

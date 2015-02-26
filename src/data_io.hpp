@@ -3,7 +3,7 @@
 #define __P2L_POINT_PROCESS_EXPERIMENT_CORE_data_io_HPP__
 
 
-#include <lcmtypes/p2l_math_core.hpp>
+#include <math-core/types.hpp>
 #include <vector>
 #include <iosfwd>
 

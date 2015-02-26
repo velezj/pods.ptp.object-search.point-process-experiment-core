@@ -3,8 +3,8 @@
 #define __POINT_PROCESS_EXPERIMENT_CORE_SIMULATED_DATA_HPP__
 
 
-#include <lcmtypes/p2l_math_core.hpp>
-#include <lcmtypes/p2l_probability_core.hpp>
+#include <math-core/types.hpp>
+#include <probability-core/types.hpp>
 #include <probability-core/distributions.hpp>
 #include <math-core/geom.hpp>
 
