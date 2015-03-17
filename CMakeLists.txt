@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6.0)
 
 # pull in the pods macros. See cmake/pods.cmake for documentation
-set(POD_NAME p2l-point-process-experiment-core)
+set(POD_NAME object-search.point-process-experiment-core)
 include(cmake/pods.cmake)
 
 add_definitions( -std=c++0x -Wall -fdiagnostics-show-option -Wno-unused-local-typedefs -fPIC )
@@ -15,7 +15,7 @@ endif (USE_PEDANTIC)
 
 
 # The library
-add_library( p2l-point-process-experiment-core SHARED
+add_library( object-search.point-process-experiment-core SHARED
   src/simulated_data.cpp
   src/data_io.cpp
   src/experiment_utils.cpp
@@ -29,19 +29,19 @@ pods_install_headers(
   DESTINATION
   point-process-experiment-core
 )
-pods_use_pkg_config_packages(p2l-point-process-experiment-core 
-    p2l-common
-    p2l-math-core
-    p2l-probability-core
-    p2l-point-process-core
-    p2l-planner-core
+pods_use_pkg_config_packages(object-search.point-process-experiment-core 
+    object-search.common
+    object-search.math-core
+    object-search.probability-core
+    object-search.point-process-core
+    object-search.planner-core
     boost-1.54.0
     boost-1.54.0-filesystem)
-pods_install_libraries( p2l-point-process-experiment-core )
-pods_install_pkg_config_file(p2l-point-process-experiment-core
+pods_install_libraries( object-search.point-process-experiment-core )
+pods_install_pkg_config_file(object-search.point-process-experiment-core
     CFLAGS
-    LIBS -lp2l-point-process-experiment-core
-    REQUIRES p2l-common p2l-math-core p2l-probability-core p2l-point-process-core p2l-planner-core boost-1.54.0 boost-1.54.0-filesystem
+    LIBS -lobject-search.point-process-experiment-core
+    REQUIRES object-search.common object-search.math-core object-search.probability-core object-search.point-process-core object-search.planner-core boost-1.54.0 boost-1.54.0-filesystem
     VERSION 0.0.1)
 
 
